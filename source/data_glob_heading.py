@@ -9,7 +9,7 @@ import quaternion
 from scipy.ndimage import gaussian_filter1d
 from torch.utils.data import Dataset
 
-from math_util import orientation_to_angles
+from math_utils import orientation_to_angles
 from data_glob_speed import GlobSpeedSequence
 from data_utils import load_cached_sequences
 
@@ -23,7 +23,8 @@ class HeadingSequence(GlobSpeedSequence):
 
     def load(self, data_path):
         super().load(data_path)
-        self.velocities = self.targets[:, :2]
+        # self.velocities = self.targets[:, :2]
+        self.velocities = self.targets
         with open(osp.join(data_path, 'info.json')) as f:
             info = json.load(f)
             rot_tango_to_body = info['align_tango_to_body']

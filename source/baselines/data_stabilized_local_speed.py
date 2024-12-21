@@ -12,7 +12,7 @@ from scipy.ndimage.filters import gaussian_filter1d
 from torch.utils.data import Dataset
 
 sys.path.append(osp.join(osp.dirname(osp.abspath(__file__)), '..'))
-from math_util import *
+from math_utils import *
 from data_utils import CompiledSequence, select_orientation_source
 
 
@@ -121,7 +121,7 @@ class StabilizedLocalSpeedDataset(Dataset):
             self.features.append(seq.get_feature())
             self.targets.append(seq.get_target())
             aux = seq.get_aux()
-            print(seq.get_meta())
+            # print(seq.get_meta())
             self.ts.append(aux[:, 0])
             self.orientations.append(aux[:, 1:5])
             self.gravity.append(aux[:, 5:8])

@@ -10,7 +10,7 @@ import pandas
 import scipy.interpolate
 
 sys.path.append(osp.join(osp.dirname(osp.abspath(__file__)), '..'))
-from math_util import interpolate_quaternion_linear
+from math_utils import interpolate_quaternion_linear
 from preprocessing.write_trajectory_to_ply import write_ply_to_file
 
 _nano_to_sec = 1e09

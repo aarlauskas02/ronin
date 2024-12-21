@@ -11,7 +11,7 @@ import quaternion
 from scipy.interpolate import interp1d
 
 sys.path.append(osp.join(osp.dirname(osp.abspath(__file__)), '..'))
-from math_util import *
+from math_utils import *
 from metric import compute_absolute_trajectory_error, compute_relative_trajectory_error
 
 if __name__ == '__main__':

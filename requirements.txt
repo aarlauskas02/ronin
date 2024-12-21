@@ -1,8 +1,8 @@
-numpy
-scipy
-pandas
-h5py
-numpy-quaternion
+numpy<2
+scipy==1.12.0
+pandas==2.0.0
+h5py==3.8.0
+numpy-quaternion==2022.4.4
 matplotlib
 torch
 torchvision
@@ -11,3 +11,7 @@ numba
 plyfile
 tqdm
 scikit-learn
+opencv-python
+joblib
+math-util
+tables

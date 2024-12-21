@@ -10,7 +10,7 @@ import warnings
 from os import path as osp
 import sys
 
-from math_util import gyro_integration
+from math_utils import gyro_integration
 
 """
 We use two levels of hierarchy for flexible data loading pipeline:
@@ -91,7 +91,7 @@ def load_cached_sequences(seq_type, root_dir, data_list, cache_path, **kwargs):
         else:
             seq = seq_type(osp.join(root_dir, data_list[i]), **kwargs)
             feat, targ, aux = seq.get_feature(), seq.get_target(), seq.get_aux()
-            print(seq.get_meta())
+            # print(seq.get_meta())
             if cache_path is not None and osp.isdir(cache_path):
                 with h5py.File(osp.join(cache_path, data_list[i] + '.hdf5'), 'x') as f:
                     f['feature'] = feat

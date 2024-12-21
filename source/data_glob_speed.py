@@ -31,46 +31,75 @@ class GlobSpeedSequence(CompiledSequence):
         if data_path is not None:
             self.load(data_path)
 
+    # def load(self, data_path):
+    #     if data_path[-1] == '/':
+    #         data_path = data_path[:-1]
+    #     with open(osp.join(data_path, 'info.json')) as f:
+    #         self.info = json.load(f)
+
+    #     self.info['path'] = osp.split(data_path)[-1]
+
+    #     self.info['ori_source'], ori, self.info['source_ori_error'] = select_orientation_source(
+    #         data_path, self.max_ori_error, self.grv_only)
+
+    #     with h5py.File(osp.join(data_path, 'data.hdf5')) as f:
+    #         gyro_uncalib = f['synced/gyro_uncalib']
+    #         acce_uncalib = f['synced/acce']
+    #         gyro = gyro_uncalib - np.array(self.info['imu_init_gyro_bias'])
+    #         acce = np.array(self.info['imu_acce_scale']) * (acce_uncalib - np.array(self.info['imu_acce_bias']))
+    #         ts = np.copy(f['synced/time'])
+    #         tango_pos = np.copy(f['pose/tango_pos'])
+    #         init_tango_ori = quaternion.quaternion(*f['pose/tango_ori'][0])
+            
+    #     # Compute the IMU orientation in the Tango coordinate frame.
+    #     ori_q = quaternion.from_float_array(ori)
+    #     rot_imu_to_tango = quaternion.quaternion(*self.info['start_calibration'])
+    #     init_rotor = init_tango_ori * rot_imu_to_tango * ori_q[0].conj()
+    #     ori_q = init_rotor * ori_q
+
+    #     dt = (ts[self.w:] - ts[:-self.w])[:, None]
+    #     glob_v = (tango_pos[self.w:] - tango_pos[:-self.w]) / dt
+
+    #     gyro_q = quaternion.from_float_array(np.concatenate([np.zeros([gyro.shape[0], 1]), gyro], axis=1))
+    #     acce_q = quaternion.from_float_array(np.concatenate([np.zeros([acce.shape[0], 1]), acce], axis=1))
+    #     glob_gyro = quaternion.as_float_array(ori_q * gyro_q * ori_q.conj())[:, 1:]
+    #     glob_acce = quaternion.as_float_array(ori_q * acce_q * ori_q.conj())[:, 1:]
+
+    #     start_frame = self.info.get('start_frame', 0)
+    #     self.ts = ts[start_frame:]
+    #     self.features = np.concatenate([glob_gyro, glob_acce], axis=1)[start_frame:]
+    #     self.targets = glob_v[start_frame:, :2]
+    #     self.orientations = quaternion.as_float_array(ori_q)[start_frame:]
+    #     self.gt_pos = tango_pos[start_frame:]
+    
+    # def load(self, data_path):
+    #     with h5py.File(osp.join(data_path, 'data.hdf5')) as f:
+    #         gyro_uncalib = f['synced/gyro_uncalib']
+    #         acce_uncalib = f['synced/acce']
+    #         gyro = gyro_uncalib - np.array([0, 0, 0])
+    #         acce = np.array([1, 1, 1]) * (acce_uncalib - np.array([0, 0, 0]))
+    #     self.features = np.concatenate([gyro, acce], axis=1)
+    #     self.targets = [[-0.004964, 0.013731],[-0.004760, 0.013712],[-0.004342, 0.013277]]
+        
     def load(self, data_path):
-        if data_path[-1] == '/':
-            data_path = data_path[:-1]
-        with open(osp.join(data_path, 'info.json')) as f:
-            self.info = json.load(f)
-
-        self.info['path'] = osp.split(data_path)[-1]
-
-        self.info['ori_source'], ori, self.info['source_ori_error'] = select_orientation_source(
-            data_path, self.max_ori_error, self.grv_only)
-
+        
         with h5py.File(osp.join(data_path, 'data.hdf5')) as f:
             gyro_uncalib = f['synced/gyro_uncalib']
             acce_uncalib = f['synced/acce']
-            gyro = gyro_uncalib - np.array(self.info['imu_init_gyro_bias'])
-            acce = np.array(self.info['imu_acce_scale']) * (acce_uncalib - np.array(self.info['imu_acce_bias']))
-            ts = np.copy(f['synced/time'])
-            tango_pos = np.copy(f['pose/tango_pos'])
-            init_tango_ori = quaternion.quaternion(*f['pose/tango_ori'][0])
+            gyro = gyro_uncalib - np.array([0, 0, 0])
+            acce = np.array([1, 1, 1]) * (acce_uncalib - np.array([0, 0, 0]))
 
-        # Compute the IMU orientation in the Tango coordinate frame.
-        ori_q = quaternion.from_float_array(ori)
-        rot_imu_to_tango = quaternion.quaternion(*self.info['start_calibration'])
-        init_rotor = init_tango_ori * rot_imu_to_tango * ori_q[0].conj()
-        ori_q = init_rotor * ori_q
+        my_list = [[0, 0, 0]] * 158225
 
-        dt = (ts[self.w:] - ts[:-self.w])[:, None]
-        glob_v = (tango_pos[self.w:] - tango_pos[:-self.w]) / dt
+        identity_quaternion = quaternion.quaternion(1, 0, 0, 0)
 
         gyro_q = quaternion.from_float_array(np.concatenate([np.zeros([gyro.shape[0], 1]), gyro], axis=1))
         acce_q = quaternion.from_float_array(np.concatenate([np.zeros([acce.shape[0], 1]), acce], axis=1))
-        glob_gyro = quaternion.as_float_array(ori_q * gyro_q * ori_q.conj())[:, 1:]
-        glob_acce = quaternion.as_float_array(ori_q * acce_q * ori_q.conj())[:, 1:]
+        glob_gyro = quaternion.as_float_array(identity_quaternion * gyro_q * identity_quaternion.conj())[:, 1:]
+        glob_acce = quaternion.as_float_array(identity_quaternion * acce_q * identity_quaternion.conj())[:, 1:]
 
-        start_frame = self.info.get('start_frame', 0)
-        self.ts = ts[start_frame:]
-        self.features = np.concatenate([glob_gyro, glob_acce], axis=1)[start_frame:]
-        self.targets = glob_v[start_frame:, :2]
-        self.orientations = quaternion.as_float_array(ori_q)[start_frame:]
-        self.gt_pos = tango_pos[start_frame:]
+        self.features = np.concatenate([glob_gyro, glob_acce], axis=1)
+        self.targets = my_list 
 
     def get_feature(self):
         return self.features

@@ -68,6 +68,7 @@ _micro_to_nano = 1000
 
 
 def load_wifi_dataset(path):
+    
     columns = ['scan', 'last_timestamp', 'BSSID', 'level']
     df = pandas.DataFrame(columns=columns)
     scan_no = 0
@@ -81,6 +82,7 @@ def load_wifi_dataset(path):
             else:
                 df = df.append(pandas.Series([scan_no, int(values[0]) * _micro_to_nano, values[1], int(values[2])],
                                              index=columns), ignore_index=True)
+    print(df)
     df_mac_addr = np.array(df.values[:, 2])
     df_num = np.array(df.values[:, [0, 1, 3]], dtype=np.int)
     return df_num, df_mac_addr

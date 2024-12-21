@@ -16,7 +16,7 @@ from model_temporal import LSTMSeqNetwork
 from data_glob_heading import HeadingSequence, HeadingDataset
 from transformations import ComposeTransform, RandomHoriRotateSeq
 from metric import compute_heading_error
-from math_util import adjust_angle_array
+from math_utils import adjust_angle_array
 from utils import load_config
 
 torch.multiprocessing.set_sharing_strategy('file_system')
@@ -53,6 +53,7 @@ class HeadingNetwork(torch.nn.Module):
         if self.predict or weight is None or weight in ('None', 'none', False):
             self.weights = torch.ones(channels, dtype=torch.get_default_dtype(), device=_device)
         else:
+            print(channels)
             assert len(weight) == channels
             self.weights = torch.tensor(weight).to(_device)
 

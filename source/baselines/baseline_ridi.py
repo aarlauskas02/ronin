@@ -20,7 +20,7 @@ from sklearn.model_selection import GridSearchCV
 sys.path.append(osp.join(osp.dirname(osp.abspath(__file__)), '..'))
 from baselines.data_stabilized_local_speed import StabilizedLocalSpeedDataset, StabilizedLocalSpeedSequence
 from metric import compute_absolute_trajectory_error, compute_relative_trajectory_error
-from math_util import *
+from math_utils import *
 
 _feature_dim, _target_dim = 6, 2
 
